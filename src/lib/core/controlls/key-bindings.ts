@@ -6,7 +6,7 @@ export class KeyBindings {
     [ KeyCodes.W, KeyCodes.UP_ARROW ]
 
   public static DOWN =
-    [ KeyCodes.D, KeyCodes.DOWN_ARROW ]
+    [ KeyCodes.S, KeyCodes.DOWN_ARROW ]
 
   public static LEFT =
     [ KeyCodes.A, KeyCodes.LEFT_ARROW ]

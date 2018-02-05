@@ -10,6 +10,10 @@ export class Hud {
     this.hudElements.push(hudElement)
   }
 
+  public static get(id: string) {
+    return this.hudElements.find(x => x.id === id)
+  }
+
   public static remove(hudElement: HudElement) {
     const index = this.hudElements.findIndex(x => x === hudElement)
     if (index > -1) {
@@ -17,10 +21,10 @@ export class Hud {
     }
   }
 
-  public static update(hudId: string, propName: string, fn: (prop: HudItem) => Sprite) {
+  public static _update(hudId: string, propName: string, fn: (prop: HudItem) => Sprite) {
     const hudElement = this.hudElements.find(x => x.id === hudId)
     if (hudElement) {
-      hudElement.update(propName, fn)
+      hudElement._update(propName, fn)
     }
   }
 

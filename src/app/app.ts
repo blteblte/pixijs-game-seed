@@ -1,10 +1,9 @@
-import { Application, Text } from 'pixi.js';
+import { Application } from 'pixi.js';
 import { KeyControlls } from '../lib/core/controlls/key-controlls';
-import { Hud } from '../lib/core/hud/hud';
-import { HudElement } from '../lib/core/hud/hud-element';
 import { Vector2 } from '../lib/core/math/vector2';
+import { HudTextElement } from '../lib/core/hud/hud-text-element';
 
-export const VIEWPORT_WIDTH = 1000
+export const VIEWPORT_WIDTH = 1920
 export const VIEWPORT_HEIGHT = VIEWPORT_WIDTH / 16 * 9
 
 class App extends Application {
@@ -18,25 +17,27 @@ class App extends Application {
 
     KeyControlls.initialize()
 
-    Hud.add(new HudElement('controlls', (this as any).stage, new Vector2(10, 10), [
-      { propName: 'pressedKey', relativeLocation: new Vector2(0, 0), element: new Text('hey') }
-    ]))
+    /* init HUD elements .... todo - this is a mess */
+    new HudTextElement('controlls', this.stage, new Vector2(10, VIEWPORT_HEIGHT - 30))
 
-    ;(this as any).ticker.add(this.gameLoop.bind(this))
-    container.appendChild((this as any).view)
+    this.ticker.add(this.gameLoop.bind(this))
+    container.appendChild(this.view)
   }
 
   gameLoop(delta) {
-
-
 
   }
 }
 
 /* bootstrap app */
 const gameContainer = document.createElement('my-game')
+gameContainer.style.width = '100%'
 gameContainer.style.display = 'inline-block'
-new App(gameContainer)
+const app = new App(gameContainer)
+const { style } = app.view
+style.width = '100%'
+style.height = '100%'
+style.display = 'block'
 
 /* append game to DOM */
 document.body.appendChild(gameContainer)

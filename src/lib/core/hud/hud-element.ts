@@ -10,13 +10,9 @@ export class HudElement {
     , protected props: HudItem[] = []
   ) { }
 
-  update(propName: string, fn: (prop: HudItem) => Sprite) {
+  _update(propName: string, fn: (prop: HudItem) => Sprite) {
     const prop = this.props.find(x => x.propName === propName)
     if (!prop) { return }
-
-    if (prop.element) {
-      prop.element.destroy()
-    }
 
     prop.element = fn(prop)
 

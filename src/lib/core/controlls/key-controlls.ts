@@ -1,6 +1,10 @@
 import { KeyBindings } from './key-bindings';
+import { Hud } from '../hud/hud';
+import { HudTextElement } from '../hud/hud-text-element';
 
 export class KeyControlls {
+
+  public static Debug = true
 
   public static UP = false
   public static DOWN = false
@@ -10,11 +14,11 @@ export class KeyControlls {
 
   public static initialize() {
     document.addEventListener('keydown', (e) => {
-      handleControlls(e, true)
+      handleControlls.bind(this)(e, true)
     })
 
     document.addEventListener('keyup', (e) => {
-      handleControlls(e, false)
+      handleControlls.bind(this)(e, false)
     })
   }
 }
@@ -22,7 +26,17 @@ export class KeyControlls {
 function handleControlls(e, value: boolean) {
   Object.keys(this).forEach(function(key) {
     if (isKey(e, KeyBindings[key] || []))
-      this[key] = value
+    {
+      if (KeyControlls[key] !== value) {
+        KeyControlls[key] = value
+
+        if (KeyControlls.Debug) {
+          const e = Hud.get('controlls') as HudTextElement
+          if (value) e.appendText(` ${key}`)
+          else e.clearText()
+        }
+      }
+    }
   })
 }
 
