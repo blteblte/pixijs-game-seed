@@ -2,13 +2,15 @@ import { Application } from 'pixi.js';
 import { KeyControlls } from '../lib/core/controlls/key-controlls';
 import { Vector2 } from '../lib/core/math/vector2';
 import { HudTextElement } from '../lib/core/hud/hud-text-element';
+import { World } from '../lib/core/world/world';
+import { Level1 } from './levels/level-1';
 
-export const VIEWPORT_WIDTH = 1920
-export const VIEWPORT_HEIGHT = VIEWPORT_WIDTH / 16 * 9
+export const W = 1920
+export const H = W / 16 * 9
 
 class App extends Application {
   constructor(container) {
-    super(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, <any>{
+    super(W, H, <any>{
       backgroundColor: '#000',
       antialias: true,
       transparent: false,
@@ -18,14 +20,14 @@ class App extends Application {
     KeyControlls.initialize()
 
     /* init HUD elements .... todo - this is a mess */
-    new HudTextElement('controlls', this.stage, new Vector2(10, VIEWPORT_HEIGHT - 30))
+    new HudTextElement('controlls', this.stage, new Vector2(10, H - 30))
 
-    this.ticker.add(this.gameLoop.bind(this))
+    const world = new World(this.stage)
+    this.ticker.add(world.tick.bind(world))
+
+    world.loadLevel(new Level1())
+
     container.appendChild(this.view)
-  }
-
-  gameLoop(delta) {
-
   }
 }
 
