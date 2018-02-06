@@ -1,11 +1,16 @@
-import { Level } from "../../lib/core/level/level";
-import { Ball } from "../actors/ball";
-import { Vector2 } from "../../lib/core/math/vector2";
+import { Level } from '../../lib/core/level/level';
+import { Ball } from '../actors/ball';
+import { Platform } from '../actors/platform';
 
 export class Level1 extends Level {
 
   async load() {
-    this.addActor(new Ball(new Vector2(600, 400)))
+    const ball = new Ball()
+    ball.isAffectedByGravity = true
+    this.addActor(ball)
+
+    this.addActor(new Platform())
+
   }
 
   async unload() {

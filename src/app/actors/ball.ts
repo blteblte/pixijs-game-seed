@@ -1,78 +1,51 @@
 import { Actor } from "../../lib/core/actor/actor";
 import { Container, Graphics } from "pixi.js";
-import { Vector2 } from "../../lib/core/math/vector2";
 import { KeyControlls } from "../../lib/core/controlls/key-controlls";
 
 export class Ball extends Actor<Container> {
 
-  private elapsedTime: number = 0
+  private movementAcceleration = 1
+  private jumpAcceleration = 1
 
-  private moveSpeed = 10
-  private speedDecrease = 20
-  private bounceScale = 100
-
-  constructor(location: Vector2) { super(Container, location) }
+  constructor() { super(Container) }
 
   async load() {
     const g = new Graphics()
     g.beginFill(0xFFFFFF)
     g.drawCircle(0, 0, 10)
     this.container.addChild(g)
+    this.x = 600
+    this.y = 400
   }
 
   async unload() {
 
   }
 
-  public moveRight(by: number) {
-    this.x += by
-  }
-
-  public moveLeft(by: number) {
-    this.x -= by
-  }
-
-  public moveUp(by: number) {
-    this.y -= by
-  }
-
-  public moveDown(by: number) {
-    this.y += by
-  }
-
   actorTick(delta: number) {
-
-    if (KeyControlls.JUMP) {
-      this.bounceScale = 200
-    }
-    else {
-      this.bounceScale = 100
+    if (KeyControlls.RIGHT) {
+      this.velocity.x += this.movementAcceleration
+    } else if (!KeyControlls.LEFT) {
+      if (this.velocity.x > 0) {
+        let newVelocity = this.velocity.x - this.movementAcceleration
+        if (newVelocity < 0) newVelocity = 0
+        this.velocity.x = newVelocity
+      }
     }
 
     if (KeyControlls.LEFT) {
-      this.moveLeft(this.moveSpeed)
+      this.velocity.x -= this.movementAcceleration
+    } else if (!KeyControlls.RIGHT) {
+      if (this.velocity.x < 0) {
+        let newVelocity = this.velocity.x + this.movementAcceleration
+        if (newVelocity > 0) newVelocity = 0
+        this.velocity.x = newVelocity
+      }
     }
 
-    if (KeyControlls.RIGHT) {
-      this.moveRight(this.moveSpeed)
+    if (KeyControlls.JUMP) {
+      this.velocity.y -= this.jumpAcceleration
     }
-
-    if (KeyControlls.UP) {
-      this.moveUp(this.moveSpeed)
-    }
-
-    if (KeyControlls.DOWN) {
-      this.moveDown(this.moveSpeed)
-    }
-
-    this.elapsedTime += delta
-    const currentLocation = this.getLocation()
-    let value = Math.sin((this.elapsedTime + delta) / this.speedDecrease) - Math.sin(this.elapsedTime / this.speedDecrease)
-    value *= this.bounceScale
-    const newLocation = currentLocation.clone().setY(
-      currentLocation.y + value
-    )
-    this.moveTo(newLocation)
   }
 
 }

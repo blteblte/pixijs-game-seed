@@ -1,16 +1,17 @@
 import { Container } from 'pixi.js';
 import { IActor } from '../actor/iactor';
+import { World } from '../world/world';
 
 export abstract class Level {
 
-  constructor(
-      protected container?: Container
-    , protected actors: IActor[] = []
-  ) {
-    if (this.container && actors && actors.length) {
-      actors.forEach(actor => container.addChild(actor.getContainer()))
-    }
-  }
+  protected world?: World
+  setWorld(world: World) { this.world = world }
+  unsetWorld() { this.world = undefined }
+
+  protected actors: IActor[] = []
+  protected container: Container
+
+  constructor() { }
 
   abstract async load()
   abstract async unload()
@@ -18,6 +19,8 @@ export abstract class Level {
 
   addActor(actor: IActor) {
     if (!this.container) return
+    actor.setWorld(this.world)
+    actor.setLevel(this)
     actor.load().then(() => {
       this.container.addChild(actor.getContainer())
       this.actors.push(actor)
@@ -26,6 +29,8 @@ export abstract class Level {
 
   removeActor(actor: IActor) {
     if (!this.container) return
+    actor.unsetLevel()
+    actor.unsetWorld()
     actor.unload().then(() => {
       this.container.removeChild(actor.getContainer())
       this.actors.splice(this.actors.findIndex(x => x === actor), 1)
@@ -33,6 +38,7 @@ export abstract class Level {
   }
 
   setContainer(container: Container) { this.container = container }
+
   getActors() { return this.actors }
 
   tick(delta: number) {
